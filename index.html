@@ -1,174 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EVM Mobile UI</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>EVM Voter Education Demo</title>
 
 <style>
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;      /* text cannot be selected */
+        -webkit-touch-callout: none;
     }
 
     body {
+        min-height: 100vh;
         background: #e3e7ea;
         display: flex;
-        justify-content: center;
-        padding: 20px;
+        flex-direction: column;
+        align-items: center;
+        padding: 14px;
+        touch-action: manipulation;   /* prevents double-tap zoom */
     }
 
-    /* Mobile Responsive EVM Frame */
+    /* ---- DISCLAIMER AT BOTTOM ---- */
+    .disclaimer-bottom {
+        margin-top: 14px;
+        font-size: 11px;
+        max-width: 420px;
+        text-align: center;
+        opacity: 0.8;
+        line-height: 1.3;
+    }
+
+    /* -------------------------------------------------- */
+    /*  EVM STYLES (same as before)                       */
+    /* -------------------------------------------------- */
+
     .evm {
         width: 100%;
-        max-width: 390px; /* perfect for mobile */
+        max-width: 420px;
+        aspect-ratio: 0.54;
         background: #dde4e1;
-        border: 3px solid #bfc5c2;
         border-radius: 18px;
+        border: 3px solid #bcc4c1;
         overflow: hidden;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-
-    /* HEADER */
-    .evm-header {
-        padding: 12px 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
         display: flex;
-        justify-content: space-between;
-        border-bottom: 2px solid #c3c7c4;
-        align-items: center;
-        font-size: 14px;
+        flex-direction: column;
+        touch-action: manipulation;
     }
 
-    .ready-light {
+    .evm-header {
+        flex: 0 0 12%;
+        min-height: 60px;
+        background: #dde4e1;
+        border-bottom: 2px solid #c0c7c5;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .header-left, .header-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ready-led {
         width: 13px;
         height: 13px;
-        background: #006b55;
         border-radius: 50%;
-        margin-left: 6px;
+        background: #006b55;
     }
 
-    .slot {
-        width: 70px;
+    .top-slot {
+        width: 72px;
         height: 18px;
-        background: #1e6f92;
         border-radius: 4px;
+        background: #1e6f92;
     }
 
-    .small-led {
+    .top-black-led {
         width: 8px;
         height: 12px;
         background: #000;
         border-radius: 3px;
     }
 
-    /* BODY */
     .evm-body {
+        flex: 1;
         display: grid;
         grid-template-columns: 62% 38%;
-        height: auto;
     }
 
-    /* LEFT – Candidate section */
     .left-panel {
         background: #d6dfda;
-        border-right: 2px solid #c3c7c4;
-        padding: 5px 0;
+        border-right: 2px solid #c0c7c5;
+        display: grid;
+        grid-template-rows: repeat(10, 1fr);
+        padding: 4px 0;
     }
 
     .candidate-row {
-        height: 52px;
         border-bottom: 2px solid rgba(255,255,255,0.7);
         display: flex;
         align-items: center;
-        padding-left: 10px;
+        padding-left: 8px;
     }
 
-    .candidate-row img {
-        height: 38px;        /* You upload your Malayalam name + icon screenshots */
+    .candidate-row--img img {
+        width: 94%;
+        height: auto;
         object-fit: contain;
+        display: block;
     }
 
-    /* RIGHT PANEL */
     .right-panel {
         background: #f5f5f5;
-        padding: 6px 0;
+        display: grid;
+        grid-template-rows: repeat(10, 1fr);
+        padding: 4px 0;
     }
 
     .control-row {
-        height: 52px;
+        border-bottom: 1px solid #e0e0e0;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
         padding: 0 10px;
-        border-bottom: 1px solid #e0e0e0;
     }
 
     .indicator {
         width: 15px;
         height: 15px;
-        background: #5b233e;
         border-radius: 50%;
+        background: #5b233e;
+        flex-shrink: 0;
     }
 
     .indicator.active {
-        background: #ff4b2b;
-        animation: blink 0.25s linear 5;
+        background: #ff4d2c;
+        animation: blink 0.22s linear 5;
     }
 
     @keyframes blink {
-        0%,100% { opacity: 1; }
-        50% { opacity: 0.2; }
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.15; }
     }
 
     .vote-btn {
         flex: 1;
         height: 34px;
-        background: #2f7ca2;
         border-radius: 18px;
         border: none;
+        background: #2f7ca2;
         cursor: pointer;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .vote-btn:active {
+        transform: translateY(1px);
         filter: brightness(0.9);
-        transform: scale(0.98);
     }
 </style>
 </head>
 
 <body>
 
+<!-- EVM MACHINE -->
 <div class="evm">
 
-    <!-- HEADER -->
     <div class="evm-header">
-        <div style="display:flex;align-items:center;gap:6px;">
-            Ready <div class="ready-light"></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-            Ballot Unit
-            <div class="small-led"></div>
-            <div class="slot"></div>
-        </div>
+      <div class="header-left">
+        Ready <div class="ready-led"></div>
+      </div>
+      <div class="header-right">
+        Ballot Unit
+        <div class="top-black-led"></div>
+        <div class="top-slot"></div>
+      </div>
     </div>
 
-    <!-- BODY -->
     <div class="evm-body">
 
-        <!-- LEFT PANEL (Candidate images) -->
         <div class="left-panel">
-
-            <!-- ROW 1 -->
             <div class="candidate-row"></div>
 
-            <!-- ROW 2 (You will upload Malayalam name + icon as ONE PNG) -->
-            <div class="candidate-row">
-                <img src="candidate2.png" alt="Candidate 2">
+            <!-- YOUR CANDIDATE IMAGE -->
+            <div class="candidate-row candidate-row--img">
+              <img src="candidate2.png" alt="Candidate 2">
             </div>
 
-            <!-- ROW 3–10 (empty, or add images later) -->
+            <!-- 3–10 blank -->
             <div class="candidate-row"></div>
             <div class="candidate-row"></div>
             <div class="candidate-row"></div>
@@ -178,88 +209,77 @@
             <div class="candidate-row"></div>
             <div class="candidate-row"></div>
             <div class="candidate-row"></div>
-
         </div>
 
-        <!-- RIGHT PANEL (Buttons + LEDs) -->
         <div class="right-panel">
-
-            <!-- 10 rows -->
-            <div class="control-row">
-                <div class="indicator"></div><button class="vote-btn"></button>
-            </div>
-            <div class="control-row">
-                <div class="indicator"></div><button class="vote-btn"></button>
-            </div>
-            <div class="control-row">
-                <div class="indicator"></div><button class="vote-btn"></button>
-            </div>
-            <div class="control-row">
-                <div class="indicator"></div><button class="vote-btn"></button>
-            </div>
-            <div class="control-row">
-                <div class="indicator"></div><button class="vote-btn"></button>
-            </div>
-            <div class="control-row">
-                <div class="indicator"></div><button class="vote-btn"></button>
-            </div>
-            <div class="control-row">
-                <div class="indicator"></div><button class="vote-btn"></button>
-            </div>
-            <div class="control-row">
-                <div class="indicator"></div><button class="vote-btn"></button>
-            </div>
-            <div class="control-row">
-                <div class="indicator"></div><button class="vote-btn"></button>
-            </div>
-            <div class="control-row">
-                <div class="indicator"></div><button class="vote-btn"></button>
-            </div>
-
+            <div class="control-row"><div class="indicator"></div><button class="vote-btn"></button></div>
+            <div class="control-row"><div class="indicator"></div><button class="vote-btn"></button></div>
+            <div class="control-row"><div class="indicator"></div><button class="vote-btn"></button></div>
+            <div class="control-row"><div class="indicator"></div><button class="vote-btn"></button></div>
+            <div class="control-row"><div class="indicator"></div><button class="vote-btn"></button></div>
+            <div class="control-row"><div class="indicator"></div><button class="vote-btn"></button></div>
+            <div class="control-row"><div class="indicator"></div><button class="vote-btn"></button></div>
+            <div class="control-row"><div class="indicator"></div><button class="vote-btn"></button></div>
+            <div class="control-row"><div class="indicator"></div><button class="vote-btn"></button></div>
+            <div class="control-row"><div class="indicator"></div><button class="vote-btn"></button></div>
         </div>
+
     </div>
 </div>
 
+<!-- DISCLAIMER AT BOTTOM -->
+<p class="disclaimer-bottom">
+  This page is only a voter-education mock demonstration.
+  It is not an official EVM and does not record real votes.
+</p>
+
 <script>
-/* SIMPLE BEEP */
-let ctx;
-function beep() {
-    if (!ctx) {
-        ctx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+  let audioCtx = null;
 
-    osc.type = "square";
-    osc.frequency.value = 1200;
-    gain.gain.value = 0.18;
+  function playBeep() {
+    try {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        audioCtx = new AC();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "square";
+      osc.frequency.value = 1200;
+      gain.gain.value = 0.18;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+      osc.start(now);
+      osc.stop(now + 0.16);
+    } catch (e) {}
+  }
 
-    osc.connect(gain);
-    gain.connect(ctx.destination);
+  const buttons = document.querySelectorAll(".vote-btn");
+  const leds = document.querySelectorAll(".indicator");
 
-    osc.start();
-    osc.stop(ctx.currentTime + 0.15);
-}
-
-/* BUTTON + LED LOGIC */
-const buttons = document.querySelectorAll(".vote-btn");
-const leds = document.querySelectorAll(".indicator");
-
-buttons.forEach((btn, i) => {
+  buttons.forEach((btn, i) => {
     btn.addEventListener("click", () => {
-        leds.forEach(l => l.classList.remove("active"));
-        leds[i].classList.add("active");
-
-        // Remove after blink
-        leds[i].addEventListener(
-            "animationend",
-            () => leds[i].classList.remove("active"),
-            { once: true }
-        );
-
-        beep();
+      leds.forEach(ind => ind.classList.remove("active"));
+      const led = leds[i];
+      led.classList.add("active");
+      led.addEventListener("animationend", () => led.classList.remove("active"), { once: true });
+      playBeep();
     });
-});
+  });
+
+  /* Extra block: prevent double-tap zoom on iOS */
+  document.addEventListener('touchstart', function(e){
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+
+  let lastTouch = 0;
+  document.addEventListener('touchend', function(e){
+    let now = Date.now();
+    if (now - lastTouch <= 250) e.preventDefault();
+    lastTouch = now;
+  }, false);
 </script>
 
 </body>
